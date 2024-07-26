@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFA Tactics Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #E0E0E0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background-color: #1E2A38;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #FFFFFF;
+        }
+        .formation {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        select {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: #FFF;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #FFF;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        .players {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .player {
+            text-align: center;
+            margin: 15px;
+            width: 160px;
+            background-color: #2C3E50;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .player img {
+            max-width: 167px;
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 5px;
+        }
+        .player p {
+            margin: 5px 0;
+            color: #FFFFFF;
+        }
+        @media (max-width: 600px) {
+            .player {
+                width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>FIFA Tactics Generator</h1>
+
+    <div class="formation">
+        <h2>Select Formation:</h2>
+        <select id="formationSelector" onchange="updatePlayers()">
+            <option value="433|Attacking">4-3-3 (Attacking)</option>
+            <option value="442|Balanced">4-4-2 (Balanced)</option>
+            <option value="352|Defensive">3-5-2 (Defensive)</option>
+            <option value="4231|Counter-Attacking">4-2-3-1 (Counter-Attacking)</option>
+            <option value="4141|Possession">4-1-4-1 (Possession)</option>
+            <option value="343|Pressing">3-4-3 (Pressing)</option>
+            <option value="532|Compact">5-3-2 (Compact)</option>
+            <option value="451|Flexible">4-5-1 (Flexible)</option>
+            <option value="433w|Wide">4-3-3 (Wide)</option>
+            
+        </select>
+    </div>
+
+    <div class="players">
+        <!-- Player list will be dynamically updated based on selection -->
+    </div>
+
+    <script>
+        const playersData = {
+            "433|Attacking": [
+                { position: "GK", name: "Marc-Andre ter Stegen", image: "player_terStegen.jpg" },
+                { position: "LB", name: "Andrew Robertson", image: "player_robertson.jpg" },
+                { position: "CB", name: "Virgil van Dijk", image: "player_vanDijk.jpg" },
+                { position: "CB", name: "Sergio Ramos", image: "player_ramos.jpg" },
+                { position: "RB", name: "Trent Alexander-Arnold", image: "player_arnold.jpg" },
+                { position: "CM", name: "Kevin De Bruyne", image: "player_debruyne.jpg" },
+                { position: "CM", name: "Luka Modric", image: "player_modric" },
+                { position: "CM", name: "N'Golo Kante", image: "player_kante.jpg" },
+                { position: "LW", name: "Neymar", image: "player_neymar.jpg" },
+                { position: "CF", name: "Lionel Messi", image: "player_messi.jpg" },
+                { position: "RW", name: "Cristiano Ronaldo", image: "player_ronaldo.jpg" }
+            ],
+            "442|Balanced": [
+                { position: "GK", name: "Jan Oblak", image: "player_oblak.jpg" },
+                { position: "LB", name: "Luke Shaw", image: "player_shaw.jpg" },
+                { position: "CB", name: "Kalidou Koulibaly", image: "player_koulibaly.jpg" },
+                { position: "CB", name: "Mats Hummels", image: "player_hummels.jpg" },
+                { position: "RB", name: "João Cancelo", image: "player_cancelo.jpg" },
+                { position: "LM", name: "Jadon Sancho", image: "player_sancho.jpg" },
+                { position: "CM", name: "Joshua Kimmich", image: "player_kimmich.jpg" },
+                { position: "CM", name: "Frenkie de Jong", image: "player_deJong.jpg" },
+                { position: "RM", name: "Hakim Ziyech", image: "player_ziyech.jpeg" },
+                { position: "ST", name: "Robert Lewandowski", image: "player_lewandowski" },
+                { position: "ST", name: "Erling Haaland", image: "player_haaland.jpg" }
+            ],
+            "352|Defensive": [
+                { position: "GK", name: "Gianluigi Donnarumma", image: "player_donarumma.jpg" },
+                { position: "CB", name: "José Giménez", image: "player_gimenez.jpg" },
+                { position: "CB", name: "Ruben Dias", image: "player_dias.jpg" },
+                { position: "CB", name: "Aymeric Laporte", image: "player_laporte.jpg" },
+                { position: "RM", name: "Dani Carvajal", image: "player_dani.jpg" },
+                { position: "CM", name: "Paul Pogba", image: "player_pogba.jpg" },
+                { position: "CM", name: "Sergio Busquets", image: "player_busqusts.jpg" },
+                { position: "LM", name: "Ben Chilwell", image: "player_ben.jpg" },
+                { position: "CAM", name: "Bruno Fernandes", image: "player_bruno fernandes.jpg" },
+                { position: "ST", name: "Karim Benzema", image: "player_benzema.jpg" },
+                { position: "ST", name: "Romelu Lukaku", image: "player_lukaku.jpg" }
+            ],
+            "4231|Counter-Attacking": [
+                { position: "GK", name: "Thibaut Courtois", image: "player_courtois.jpg" },
+                { position: "LB", name: "Jordi Alba", image: "player_alba.jpg" },
+                { position: "CB", name: "Gerard Pique", image: "player_pique.jpg" },
+                { position: "CB", name: "Leonardo Bonucci", image: "player_bonucci.jpg" },
+                { position: "RB", name: "Kyle Walker", image: "player_walker.jpg" },
+                { position: "CDM", name: "Casemiro", image: "player_casemiro.jpg" },
+                { position: "CDM", name: "Fabinho", image: "player_fabinhe.jpg" },
+                { position: "CAM", name: "Kai Havertz", image: "player_havertz.jpg" },
+                { position: "LM", name: "Eden Hazard", image: "player_hazard.jpg" },
+                { position: "RM", name: "Raheem Sterling", image: "player_sterling.jpg" },
+                { position: "ST", name: "Harry Kane", image: "player_kane.jpg" }
+            ],
+            "4141|Possession": [
+                { position: "GK", name: "Ederson", image: "player_ederson.jpg" },
+                { position: "LB", name: "Ben Chilwell", image: "player_ben.jpg" },
+                { position: "CB", name: "Raphael Varane", image: "player_varane.jpg" },
+                { position: "CB", name: "Marquinhos", image: "player_marquinhos.jpg" },
+                { position: "RB", name: "Achraf Hakimi", image: "player_hakimi.jpg" },
+                { position: "CDM", name: "Rodri", image: "player_rodri.jpg" },
+                { position: "CM", name: "Ilkay Gundogan", image: "player_gundogan.jpg" },
+                { position: "CM", name: "Marco Verratti", image: "player_verratti.jpg" },
+                { position: "LM", name: "Jack Grealish", image: "player_grealish.jpg" },
+                { position: "RM", name: "Angel Di Maria", image: "player_dimaria.jpg" },
+                { position: "ST", name: "Lautaro Martinez", image: "player_martinez.jpg" }
+            ],
+            "343|Pressing": [
+                { position: "GK", name: "Alisson", image: "player_alison.jpg" },
+                { position: "CB", name: "Thiago Silva", image: "player_silva.jpg" },
+                { position: "CB", name: "Milan Skriniar", image: "player_skriniar.jpg" },
+                { position: "CB", name: "Stefan de Vrij", image: "player_devrij.jpg" },
+                { position: "LM", name: "Heung-min Son", image: "player_son.jpg"},
+                { position: "CM", name: "Toni Kroos", image: "player_kroos.jpg" },
+                { position: "CM", name: "Leon Goretzka", image: "player_goretzeka.jpg" },
+                { position: "RM", name: "Mohamed Salah", image: "player_salah.jpg" },
+                { position: "LW", name: "Lorenzo Insigne", image: "player_insigne.jpg" },
+                { position: "ST", name: "Timo Werner", image: "player_werner.jpg" },
+                { position: "RW", name: "Riyad Mahrez", image: "player_mahrez.jpg" }
+            ],
+            "532|Compact": [
+                { position: "GK", name: "Keylor Navas", image: "player_navas.jpg" },
+                { position: "LB", name: "Lucas Digne", image: "player_digne.jpg" },
+                { position: "CB", name: "Giorgio Chiellini", image: "player_chiellini.jpg" },
+                { position: "CB", name: "John Stones", image: "player_stones.jpg" },
+                { position: "CB", name: "Niklas Sule", image: "player_sule.jpg" },
+                { position: "RB", name: "Kieran Trippier", image: "player_trippier.jpg" },
+                { position: "CM", name: "Marcelo Brozovic", image: "player_brozovic.jpg" },
+                { position: "CM", name: "Mason Mount", image: "player_mount.jpg" },
+                { position: "CM", name: "Thiago Alcantara", image: "player_alcantra.jpg" },
+                { position: "ST", name: "Gerard Moreno", image: "player_moreno.jpg" },
+                { position: "ST", name: "Zlatan Ibrahimovic", image: "player_ibra.jpg" }
+            ],
+            "451|Flexible": [
+                { position: "GK", name: "Samir Handanovic", image: "player_handanovic.jpg" },
+                { position: "LB", name: "Alex Telles", image: "player_telles.jpg" },
+                { position: "CB", name: "Diego Godin", image: "player_godin.jpg" },
+                { position: "CB", name: "Clement Lenglet", image: "player_lenglet.jpg" },
+                { position: "RB", name: "Ricardo Pereira", image: "player_pereira.jpg" },
+                { position: "LM", name: "Marcus Rashford", image: "player_rashford.jpg" },
+                { position: "CM", name: "Jordan Henderson", image: "player_henderson.jpg" },
+                { position: "CM", name: "Thiago Alcantara", image: "player_alcantra.jpg" },
+                { position: "RM", name: "Bernardo Silva", image: "player_bernardo.jpg" },
+                { position: "CAM", name: "Philippe Coutinho", image: "player_coutinho.jpg" },
+                { position: "ST", name: "Alexandre Lacazette", image: "player_lacazette.jpg" }
+            ],
+            "433w|Wide": [
+                { position: "GK", name: "Wojciech Szczesny", image: "player_szc.jpg" },
+                { position: "LB", name: "Nicolas Tagliafico", image: "player_tagliafico.jpg" },
+                { position: "CB", name: "David Alaba", image: "player_alaba.jpg" },
+                { position: "CB", name: "Jules Kounde", image: "player_kounde.jpg" },
+                { position: "RB", name: "Thomas Meunier", image: "player_meunier.jpg" },
+                { position: "CM", name: "Miralem Pjanic", image: "player_pjanic.jpg" },
+                { position: "CM", name: "Georginio Wijnaldum", image: "player_wijnaldum.jpg" },
+                { position: "CM", name: "Emre Can", image: "player_can.jpg" },
+                { position: "LW", name: "Kingsley Coman", image: "player_coman.jpg" },
+                { position: "CF", name: "Joao Felix", image: "player_felix.jpg" },
+                { position: "RW", name: "Federico Chiesa", image: "player_chiesa.jpg" }
+            ],
+            "442b|Classic": [
+                { position: "GK", name: "Hugo Lloris", image: "player_lloris.jpg" },
+                { position: "LB", name: "Alejandro Grimaldo", image: "player_grimaldo.jpg" },
+                { position: "CB", name: "Harry Maguire", image: "player_maguire.jpg" },
+                { position: "CB", name: "James Tarkowski", image: "player_tarkowski.jpg" },
+                { position: "RB", name: "Benjamin Pavard", image: "player_pavard.jpg" },
+                { position: "LM", name: "Serge Gnabry", image: "player_gnabry.jpg" },
+                { position: "CM", name: "Declan Rice", image: "player_rice.jpg" },
+                { position: "CM", name: "Houssem Aouar", image: "player_aouar.jpg" },
+                { position: "RM", name: "Christian Pulisic", image: "player_pulisic.jpg" },
+                { position: "ST", name: "Luis Suarez", image: "player_suarez.jpg" },
+                { position: "ST", name: "Zlatan Ibrahimovic", image: "player_ibra.jpg" }
+            ]
+        };
+
+        function updatePlayers() {
+            const formation = document.getElementById('formationSelector').value;
+            const players = playersData[formation];
+
+            const playersContainer = document.querySelector('.players');
+            playersContainer.innerHTML = '';
+
+            players.forEach(player => {
+                const playerDiv = document.createElement('div');
+                playerDiv.classList.add('player');
+
+                const playerImage = document.createElement('img');
+                playerImage.src = player.image;
+                playerImage.alt = player.name;
+
+                const playerName = document.createElement('p');
+                playerName.textContent = player.name;
+
+                const playerPosition = document.createElement('p');
+                playerPosition.textContent = player.position;
+
+                playerDiv.appendChild(playerImage);
+                playerDiv.appendChild(playerName);
+                playerDiv.appendChild(playerPosition);
+
+                playersContainer.appendChild(playerDiv);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', updatePlayers);
+    </script>
+</div>
+
+</body>
+</html>
